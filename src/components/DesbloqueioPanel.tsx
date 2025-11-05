@@ -55,6 +55,15 @@ const requiredFields = [
   "nome_financiado",
 ];
 
+// Visual mapping for field display names
+const fieldDisplayMapping: Record<string, string> = {
+  "cpf": "cpf",
+  "cnpj": "cnpj",
+  "chassi": "chassi",
+  "placa": "placa",
+  "nome_financiado": "pessoas_identificadas",
+};
+
 export function DesbloqueioPanel() {
   const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [isLoading, setIsLoading] = useState(false);
@@ -461,7 +470,7 @@ export function DesbloqueioPanel() {
                               fontSize: "0.85em",
                             }}
                           >
-                            {field}
+                            {fieldDisplayMapping[field] || field}
                           </code>
                         </div>
                       );
@@ -620,10 +629,14 @@ export function DesbloqueioPanel() {
                           displayValue = String(value);
                         }
 
+                        // Map field names to display names
+                        const mappedAlternatives = alternatives.map(
+                          alt => fieldDisplayMapping[alt] || alt
+                        );
                         const fieldDisplayName =
                           alternatives.length > 1
-                            ? alternatives.join(" OR ")
-                            : fieldSpec;
+                            ? mappedAlternatives.join(" OR ")
+                            : (fieldDisplayMapping[fieldSpec] || fieldSpec);
 
                         return (
                           <TableRow
