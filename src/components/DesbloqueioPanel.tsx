@@ -194,7 +194,12 @@ export function DesbloqueioPanel() {
         throw new Error(`Erro na requisição: ${response.status}`);
       }
 
-      const data = await response.json();
+      let data = await response.json();
+      
+      // Handle array response format: [data, statusCode]
+      if (Array.isArray(data) && data.length > 0) {
+        data = data[0];
+      }
       
       // Validate the returned JSON
       const jsonString = JSON.stringify(data, null, 2);
